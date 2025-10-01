@@ -1,0 +1,59 @@
+<?php
+declare(strict_types=1);
+
+namespace Sitegeist\Kaleidoscope\SvgDimensions\Command;
+
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use Neos\Media\Domain\Model\Image;
+use Neos\Media\Domain\Repository\ImageRepository;
+use Sitegeist\Kaleidoscope\SvgDimensions\Extractor\SvgDimensionExtractor;
+
+class SvgImageCommandController extends CommandController {
+
+    #[Flow\Inject]
+    public ImageRepository $imageRepository;
+
+    #[Flow\Inject]
+    public PersistenceManager $persistenceManager;
+
+    public function calculateMissingDimensionsCommand(bool $force = false): void
+    {
+        $this->outputLine('Looking for SVG Assets without dimensions');
+
+        $queryResult = $this->imageRepository->findAll();
+        $this->output->progressStart($queryResult->count());
+        $count = 0;
+
+        /**
+         * @var Image $image
+         */
+        foreach($queryResult as $image) {
+            $this->output->progressAdvance(1);
+            if ($image->getResource()->getMediaType() === 'image/svg+xml') {
+                if ($force === true || $image->getWidth() == 0 || $image->getHeight() == 0) {
+                    $dimensions = SvgDimensionExtractor::extractSvgImageSizes($image);
+                    if ($dimensions !== null && $dimensions->getWidth() > 0 && $dimensions->getHeight() > 0) {
+                        $objectReflection = new \ReflectionObject($image);
+
+                        $widthProperty = $objectReflection->getProperty('width');
+                        $widthProperty->setAccessible(true);
+                        $widthProperty->setValue($image, $dimensions->getWidth());
+
+                        $heightProperty = $objectReflection->getProperty('height');
+                        $heightProperty->setAccessible(true);
+                        $heightProperty->setValue($image, $dimensions->getHeight());
+
+                        $this->persistenceManager->update($image);
+                        $count ++;
+                    }
+                }
+            }
+        }
+
+        $this->output->progressFinish();
+        $this->outputLine();
+        $this->outputLine('Added dimensions to %s SVG Assets', [$count]);
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "description": "Detect dimensions of svg files in the media repository while neos cannot do it yet",
+    "type": "neos-package",
+    "name": "sitegeist/kaleidoscope-svgdimensions",
+    "require": {
+        "contao/imagine-svg": "^1.0.0",
+        "neos/media": "^8.3.0",
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sitegeist\\Kaleidoscope\\SvgDimensions\\": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Sitegeist.Kaleidoscope.SvgDimensions"
+        }
+    }
+}
