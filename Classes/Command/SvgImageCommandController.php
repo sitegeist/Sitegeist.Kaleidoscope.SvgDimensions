@@ -18,7 +18,12 @@ class SvgImageCommandController extends CommandController {
     #[Flow\Inject]
     public PersistenceManager $persistenceManager;
 
-    public function calculateMissingDimensionsCommand(bool $force = false): void
+    /**
+     * Calculate dimensions for SVG assets that do not have them yet
+     *
+     * @param bool $force re calculate dimensions for all svg assets
+     */
+    public function calculateDimensionsCommand(bool $force = false): void
     {
         $this->outputLine('Looking for SVG Assets without dimensions');
 
