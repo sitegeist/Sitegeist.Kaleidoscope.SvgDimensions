@@ -13,8 +13,8 @@ use Neos\Media\Domain\Model\ImageInterface;
  *
  * @Flow\Entity
  */
-class SvgResizeAdjustment extends ResizeImageAdjustment {
-
+class SvgResizeAdjustment extends ResizeImageAdjustment
+{
     public static function createFromResizeImageAdjustment(ResizeImageAdjustment $resizeImageAdjustment): self
     {
         $res = new self();
@@ -36,7 +36,8 @@ class SvgResizeAdjustment extends ResizeImageAdjustment {
 
     protected function resizeSvgImage(SvgImage $image, string $mode = ImageInterface::RATIOMODE_INSET): SvgImage
     {
-        if ($mode !== ImageInterface::RATIOMODE_INSET &&
+        if (
+            $mode !== ImageInterface::RATIOMODE_INSET &&
             $mode !== ImageInterface::RATIOMODE_OUTBOUND
         ) {
             throw new \InvalidArgumentException('Invalid mode specified', 1574686891);
@@ -56,8 +57,8 @@ class SvgResizeAdjustment extends ResizeImageAdjustment {
 
         if ($mode === ImageInterface::RATIOMODE_OUTBOUND) {
             $image->crop(new Point(
-                max(0, round(($resizeDimensions->getWidth() - $requestedDimensions->getWidth()) / 2)),
-                max(0, round(($resizeDimensions->getHeight() - $requestedDimensions->getHeight()) / 2))
+                (int)max(0, round(($resizeDimensions->getWidth() - $requestedDimensions->getWidth()) / 2)),
+                (int)max(0, round(($resizeDimensions->getHeight() - $requestedDimensions->getHeight()) / 2))
             ), $requestedDimensions);
         }
 

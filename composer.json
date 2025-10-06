@@ -7,6 +7,17 @@
         "neos/media": "^8.3.0",
         "php": "^8.2"
     },
+    "require-dev": {
+        "phpstan/phpstan": "^1.8",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "scripts": {
+        "fix:style": "phpcbf --colors --standard=PSR12 Classes",
+        "fix": ["composer install", "composer fix:style"],
+        "test:style": "phpcs --colors -n --standard=PSR12 Classes",
+        "test:stan": "phpstan analyse Classes -v -c phpstan.neon",
+        "test": ["composer install", "composer test:style" , "composer test:stan"]
+    },
     "autoload": {
         "psr-4": {
             "Sitegeist\\Kaleidoscope\\SvgDimensions\\": "Classes/"
@@ -15,6 +26,11 @@
     "extra": {
         "neos": {
             "package-key": "Sitegeist.Kaleidoscope.SvgDimensions"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "neos/composer-plugin": true
         }
     }
 }

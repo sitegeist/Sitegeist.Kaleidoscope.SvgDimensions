@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Sitegeist\Kaleidoscope\SvgDimensions\Command;
@@ -12,8 +13,8 @@ use Neos\Media\Domain\Model\Image;
 use Neos\Media\Domain\Repository\ImageRepository;
 use Sitegeist\Kaleidoscope\SvgDimensions\Extractor\SvgDimensionExtractor;
 
-class SvgImageCommandController extends CommandController {
-
+class SvgImageCommandController extends CommandController
+{
     #[Flow\Inject]
     public ImageRepository $imageRepository;
 
@@ -36,13 +37,15 @@ class SvgImageCommandController extends CommandController {
         /**
          * @var Image $image
          */
-        foreach($queryResult as $image) {
+        foreach ($queryResult as $image) {
             $this->output->progressAdvance(1);
             if ($image->getResource()->getMediaType() === 'image/svg+xml') {
                 if ($force === true || $image->getWidth() == 0 || $image->getHeight() == 0) {
-
+                    $resourceStream = $image->getResource()->getStream();
+                    if (is_bool($resourceStream)) {
+                        continue;
+                    }
                     try {
-                        $resourceStream = $image->getResource()->getStream();
                         $svgImage = (new SvgImagine())->read($resourceStream);
                         $svgSize = $svgImage->getSize();
                     } catch (\Exception $e) {
@@ -61,7 +64,7 @@ class SvgImageCommandController extends CommandController {
                         $heightProperty->setValue($image, $svgSize->getHeight());
 
                         $this->persistenceManager->update($image);
-                        $count ++;
+                        $count++;
                     }
                 }
             }

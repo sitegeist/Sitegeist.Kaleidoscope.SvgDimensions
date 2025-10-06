@@ -13,6 +13,7 @@ use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\Utility\Algorithms;
 use Neos\Flow\Utility\Environment;
 use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
+use Neos\Media\Domain\Model\Adjustment\ImageAdjustmentInterface;
 use Neos\Media\Domain\Model\Adjustment\ResizeImageAdjustment;
 use Psr\Log\LoggerInterface;
 use Sitegeist\Kaleidoscope\SvgDimensions\Adjustments\SvgCropAdjustment;
@@ -22,8 +23,8 @@ use Sitegeist\Kaleidoscope\SvgDimensions\Adjustments\SvgResizeAdjustment;
  * @Flow\Scope("singleton")
  * @Flow\Aspect
  */
-class ImageServiceAspect {
-
+class ImageServiceAspect
+{
     /**
      * @Flow\Inject
      * @var Environment
@@ -35,12 +36,6 @@ class ImageServiceAspect {
      * @Flow\Inject
      */
     protected $resourceManager;
-
-    /**
-     * @Flow\Inject
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var PersistenceManager
@@ -63,8 +58,11 @@ class ImageServiceAspect {
             return $joinPoint->getAdviceChain()->proceed($joinPoint);
         }
 
+        $resourceStream = $resource->getStream();
+        if (is_bool($resourceStream)) {
+            return ['width' => null, 'height' => null];
+        }
         try {
-            $resourceStream = $resource->getStream();
             $svgImage = (new SvgImagine())->read($resourceStream);
         } catch (\Exception $e) {
             return ['width' => null, 'height' => null];
@@ -90,16 +88,18 @@ class ImageServiceAspect {
         }
 
         // we are sure to handle svg images here and can proceed
-        /** @var array $adjustments */
+        /** @var ImageAdjustmentInterface[] $adjustments */
         $adjustments = $joinPoint->getMethodArgument('adjustments');
-
-        $this->logger->info("processImage Aspect", [$originalResource, $adjustments]);
 
         $originalResourceStream = $originalResource->getStream();
 
+        if (is_bool($originalResourceStream)) {
+            return $this->fallbackToOriginalResource($originalResource);
+        }
+
         try {
             $svgImage = (new SvgImagine())->read($originalResourceStream);
-        } catch (\Imagine\Exception\InvalidArgumentException $e) {
+        } catch (\Exception) {
             return $this->fallbackToOriginalResource($originalResource);
         }
 
@@ -136,15 +136,12 @@ class ImageServiceAspect {
      * @param PersistentResource $originalResource
      * @return array{resource: PersistentResource, width: ?int, height: ?int}
      */
-    protected function fallbackToOriginalResource(PersistentResource $originalResource): array {
-        $originalResourceStream = $originalResource->getStream();
-        $resource = $this->resourceManager->importResource($originalResourceStream, $originalResource->getCollectionName());
-        fclose($originalResourceStream);
-        $resource->setFilename($originalResource->getFilename());
+    protected function fallbackToOriginalResource(PersistentResource $originalResource): array
+    {
         return [
             'width' => null,
             'height' => null,
-            'resource' => $resource
+            'resource' => $originalResource
         ];
     }
 }

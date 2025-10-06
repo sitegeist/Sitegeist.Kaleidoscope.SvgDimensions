@@ -13,16 +13,16 @@ use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
  *
  * @Flow\Entity
  */
-class SvgCropAdjustment extends CropImageAdjustment {
-
-    public static function createFromCropImageAdjustment(CropImageAdjustment $cropImageAdjustment):self
+class SvgCropAdjustment extends CropImageAdjustment
+{
+    public static function createFromCropImageAdjustment(CropImageAdjustment $cropImageAdjustment): self
     {
         $res = new self();
         $res->setWidth($cropImageAdjustment->getWidth());
         $res->setHeight($cropImageAdjustment->getHeight());
         $res->setX($cropImageAdjustment->getX());
         $res->setY($cropImageAdjustment->getY());
-        $res->setAspectRatio( $cropImageAdjustment->getAspectRatio());
+        $res->setAspectRatio($cropImageAdjustment->getAspectRatio());
         return $res;
     }
 
