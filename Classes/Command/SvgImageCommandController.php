@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Sitegeist\Kaleidoscope\SvgDimensions\Command;
 
+use Contao\ImagineSvg\Imagine as SvgImagine;
+use Contao\ImagineSvg\SvgBox;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
@@ -38,17 +40,25 @@ class SvgImageCommandController extends CommandController {
             $this->output->progressAdvance(1);
             if ($image->getResource()->getMediaType() === 'image/svg+xml') {
                 if ($force === true || $image->getWidth() == 0 || $image->getHeight() == 0) {
-                    $dimensions = SvgDimensionExtractor::extractSvgImageSizes($image);
-                    if ($dimensions !== null && $dimensions->getWidth() > 0 && $dimensions->getHeight() > 0) {
+
+                    try {
+                        $resourceStream = $image->getResource()->getStream();
+                        $svgImage = (new SvgImagine())->read($resourceStream);
+                        $svgSize = $svgImage->getSize();
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+
+                    if ($svgSize instanceof SvgBox && $svgSize->getWidth() > 0 && $svgSize->getHeight() > 0) {
                         $objectReflection = new \ReflectionObject($image);
 
                         $widthProperty = $objectReflection->getProperty('width');
                         $widthProperty->setAccessible(true);
-                        $widthProperty->setValue($image, $dimensions->getWidth());
+                        $widthProperty->setValue($image, $svgSize->getWidth());
 
                         $heightProperty = $objectReflection->getProperty('height');
                         $heightProperty->setAccessible(true);
-                        $heightProperty->setValue($image, $dimensions->getHeight());
+                        $heightProperty->setValue($image, $svgSize->getHeight());
 
                         $this->persistenceManager->update($image);
                         $count ++;

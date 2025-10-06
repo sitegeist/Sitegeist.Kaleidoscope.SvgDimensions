@@ -13,7 +13,10 @@ use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\Utility\Algorithms;
 use Neos\Flow\Utility\Environment;
 use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
+use Neos\Media\Domain\Model\Adjustment\ResizeImageAdjustment;
 use Psr\Log\LoggerInterface;
+use Sitegeist\Kaleidoscope\SvgDimensions\Adjustments\SvgCropAdjustment;
+use Sitegeist\Kaleidoscope\SvgDimensions\Adjustments\SvgResizeAdjustment;
 
 /**
  * @Flow\Scope("singleton")
@@ -46,10 +49,37 @@ class ImageServiceAspect {
     protected $persistenceManager;
 
     /**
+     * @see \Neos\Media\Domain\Service\ImageService::getImageSize
+     *
+     * @Flow\Around("method(Neos\Media\Domain\Service\ImageService->getImageSize())")
+     * @param \Neos\Flow\Aop\JoinPointInterface $joinPoint The current join point
+     * @return array{width: ?int, height: ?int}
+     */
+    public function getImageSize(JoinPointInterface $joinPoint): array
+    {
+        /** @var PersistentResource $resource */
+        $resource = $joinPoint->getMethodArgument('resource');
+        if ($resource->getMediaType() !== 'image/svg+xml') {
+            return $joinPoint->getAdviceChain()->proceed($joinPoint);
+        }
+
+        try {
+            $resourceStream = $resource->getStream();
+            $svgImage = (new SvgImagine())->read($resourceStream);
+        } catch (\Exception $e) {
+            return ['width' => null, 'height' => null];
+        }
+
+        $size = $svgImage->getSize();
+        return ['width' => $size->getWidth(), 'height' => $size->getHeight()];
+    }
+
+    /**
+     * @see \Neos\Media\Domain\Service\ImageService::processImage
+     *
      * @Flow\Around("method(Neos\Media\Domain\Service\ImageService->processImage())")
      * @param \Neos\Flow\Aop\JoinPointInterface $joinPoint The current join point
      * @return array{resource: PersistentResource, width: ?int, height: ?int}
-     * @deprecated will be removed with Neos 9
      */
     public function processImage(JoinPointInterface $joinPoint): array
     {
@@ -75,12 +105,15 @@ class ImageServiceAspect {
 
         $size = $svgImage->getSize();
 
-
         foreach ($adjustments as $adjustment) {
             if ($adjustment instanceof CropImageAdjustment) {
-                $point = new Point($adjustment->getX(), $adjustment->getY());
-                $box = new Box($adjustment->getWidth(), $adjustment->getHeight());
-                $svgImage = $svgImage->crop($point, $box);
+                $svgAdjustment = SvgCropAdjustment::createFromCropImageAdjustment($adjustment);
+                $svgImage = $svgAdjustment->applyToSvgImage($svgImage);
+                $size = $svgImage->getSize();
+            }
+            if ($adjustment instanceof ResizeImageAdjustment) {
+                $svgAdjustment = SvgResizeAdjustment::createFromResizeImageAdjustment($adjustment);
+                $svgImage = $svgAdjustment->applyToSvgImage($svgImage);
                 $size = $svgImage->getSize();
             }
         }
