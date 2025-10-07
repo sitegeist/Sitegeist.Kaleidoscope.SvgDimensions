@@ -1,7 +1,8 @@
 {
-    "description": "Detect dimensions of svg files in the media repository while neos cannot do it yet",
+    "description": "Add SVG processing capabilities to Neos via contao/imagine-svg",
     "type": "neos-package",
     "name": "sitegeist/kaleidoscope-svgdimensions",
+    "license": "GPL-3.0-or-later",
     "require": {
         "contao/imagine-svg": "^1.0.0",
         "neos/media": "^8.3 || ^9.0",

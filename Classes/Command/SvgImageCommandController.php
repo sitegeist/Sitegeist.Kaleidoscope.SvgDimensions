@@ -22,9 +22,9 @@ class SvgImageCommandController extends CommandController
     public PersistenceManager $persistenceManager;
 
     /**
-     * Calculate dimensions for SVG assets that do not have them yet
+     * Calculate missing dimensions for SVG assets
      *
-     * @param bool $force re calculate dimensions for all svg assets
+     * @param bool $force update all svg asset dimensions
      */
     public function calculateDimensionsCommand(bool $force = false): void
     {
