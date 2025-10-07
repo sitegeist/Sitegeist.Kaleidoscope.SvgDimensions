@@ -30,17 +30,10 @@ jobs:
                   extensions: mbstring, xml, json, zlib, iconv, intl, pdo_sqlite
                   ini-values: date.timezone="Africa/Tunis", opcache.fast_shutdown=0, apc.enable_cli=on
 
-            - name:  Set Neos Version > 9
-              if: ${{startsWith(matrix.neos-versions, '9') }}
+            - name:  Set Neos Media Version
               run: |
-                composer require neos/contentgraph-doctrinedbaladapter ^${{ matrix.neos-versions }} --no-progress --no-interaction --no-update
-                composer require neos/eventstore-doctrineadapter --no-progress --no-interaction --no-update
-                composer require neos/neos ^${{ matrix.neos-versions }} --no-progress --no-interaction --no-update
+                composer require neos/media ^${{ matrix.neos-versions }} --no-progress --no-interaction --no-update
                 composer update
-
-            - name: Set Neos Version < 9
-              if: ${{! startsWith(matrix.neos-versions, '9') }}
-              run: composer require neos/neos ^${{ matrix.neos-versions }} --no-progress --no-interaction
 
             - name: Run Tests
               run: composer test

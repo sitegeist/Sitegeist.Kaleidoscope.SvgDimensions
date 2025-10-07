@@ -4,7 +4,7 @@
     "name": "sitegeist/kaleidoscope-svgdimensions",
     "require": {
         "contao/imagine-svg": "^1.0.0",
-        "neos/media": "^8.3.0",
+        "neos/media": "^8.3 || ^9.0",
         "php": "^8.2"
     },
     "require-dev": {
