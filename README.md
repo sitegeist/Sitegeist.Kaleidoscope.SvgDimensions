@@ -1,9 +1,13 @@
-# Sitegeist.Kaleidoscope.SvgDimensions
+# Sitegeist.Kaleidoscope.Svg
 ## SVG cropping and resizing for neos via contao/imagine-svg 
 
 This package allows to crop and resize SVG images in Neos and also will 
 detect dimensions in newly uploaded SVG images to properly handle the different 
 image orientations of SVG images.
+
+!!! This package has no hard dependency to Sitegeist.Kaleidoscope however it surely is meant
+to be used together with it and developed and tested for it. Use cases outside of Kaleidoscope
+are not actively tested yet. !!!
 
 ### Usage
 
@@ -28,7 +32,7 @@ by our employer http://www.sitegeist.de.*
 
 ## Installation
 
-Sitegeist.Kaleidoscope.SvgDimensions is available via packagist run `composer require sitegeist/kaleidoscope-svgdimensions`.
+Sitegeist.Kaleidoscope.Svg is available via packagist run `composer require sitegeist/kaleidoscope-svg`.
 We use semantic versioning so every breaking change will increase the major-version number.
 
 ## Contribution

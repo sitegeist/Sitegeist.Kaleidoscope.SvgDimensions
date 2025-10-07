@@ -3,6 +3,6 @@ Neos:
     Ui:
       resources:
         stylesheets:
-          'Sitegeist.Kaleidoscope.SvgDimensions':
-            resource: 'resource://Sitegeist.Kaleidoscope.SvgDimensions/Public/NeosUserInterface/AdjustImageEditor.css'
+          'Sitegeist.Kaleidoscope.Svg':
+            resource: 'resource://Sitegeist.Kaleidoscope.Svg/Public/NeosUserInterface/AdjustImageEditor.css'
             position: 'end 100'

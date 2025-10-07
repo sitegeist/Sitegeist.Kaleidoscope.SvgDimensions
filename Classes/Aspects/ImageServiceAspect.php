@@ -1,6 +1,6 @@
 <?php
 
-namespace Sitegeist\Kaleidoscope\SvgDimensions\Aspects;
+namespace Sitegeist\Kaleidoscope\Svg\Aspects;
 
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Imagine\Image\Box;
@@ -16,8 +16,8 @@ use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
 use Neos\Media\Domain\Model\Adjustment\ImageAdjustmentInterface;
 use Neos\Media\Domain\Model\Adjustment\ResizeImageAdjustment;
 use Psr\Log\LoggerInterface;
-use Sitegeist\Kaleidoscope\SvgDimensions\Adjustments\SvgCropAdjustment;
-use Sitegeist\Kaleidoscope\SvgDimensions\Adjustments\SvgResizeAdjustment;
+use Sitegeist\Kaleidoscope\Svg\Adjustments\SvgCropAdjustment;
+use Sitegeist\Kaleidoscope\Svg\Adjustments\SvgResizeAdjustment;
 
 /**
  * @Flow\Scope("singleton")

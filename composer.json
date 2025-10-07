@@ -1,7 +1,7 @@
 {
     "description": "Add SVG processing capabilities to Neos via contao/imagine-svg",
     "type": "neos-package",
-    "name": "sitegeist/kaleidoscope-svgdimensions",
+    "name": "sitegeist/kaleidoscope-svg",
     "license": "GPL-3.0-or-later",
     "require": {
         "contao/imagine-svg": "^1.0.0",
@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Sitegeist\\Kaleidoscope\\SvgDimensions\\": "Classes/"
+            "Sitegeist\\Kaleidoscope\\Svg\\": "Classes/"
         }
     },
     "extra": {
         "neos": {
-            "package-key": "Sitegeist.Kaleidoscope.SvgDimensions"
+            "package-key": "Sitegeist.Kaleidoscope.Svg"
         }
     },
     "config": {

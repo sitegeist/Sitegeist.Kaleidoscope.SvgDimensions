@@ -1,6 +1,6 @@
 <?php
 
-namespace Sitegeist\Kaleidoscope\SvgDimensions\Adjustments;
+namespace Sitegeist\Kaleidoscope\Svg\Adjustments;
 
 use Neos\Flow\Annotations as Flow;
 use Contao\ImagineSvg\Image as SvgImage;

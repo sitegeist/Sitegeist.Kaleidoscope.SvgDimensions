@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Sitegeist\Kaleidoscope\SvgDimensions\Command;
+namespace Sitegeist\Kaleidoscope\Svg\Command;
 
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Contao\ImagineSvg\SvgBox;
@@ -11,7 +11,7 @@ use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\Image;
 use Neos\Media\Domain\Repository\ImageRepository;
-use Sitegeist\Kaleidoscope\SvgDimensions\Extractor\SvgDimensionExtractor;
+use Sitegeist\Kaleidoscope\Svg\Extractor\SvgDimensionExtractor;
 
 class SvgImageCommandController extends CommandController
 {
