@@ -17,7 +17,7 @@ However there is a command to detect the dimensions of already uploaded for
 SVG images via cli.
 
 ```
-./flow svgimage:calculatedimensions [<options>]
+./flow svg:refreshdimensions [<options>]
 
 OPTIONS:
   --force              re calculate dimensions for all svg assets

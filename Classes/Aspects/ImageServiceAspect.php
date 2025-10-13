@@ -90,17 +90,22 @@ class ImageServiceAspect
         // we are sure to handle svg images here and can proceed
         /** @var ImageAdjustmentInterface[] $adjustments */
         $adjustments = $joinPoint->getMethodArgument('adjustments');
-
         $originalResourceStream = $originalResource->getStream();
 
+        $nonAdjustedResultWithOriginalResource = [
+            'width' => null,
+            'height' => null,
+            'resource' => $originalResource
+        ];
+
         if (is_bool($originalResourceStream)) {
-            return $this->fallbackToOriginalResource($originalResource);
+            return $nonAdjustedResultWithOriginalResource;
         }
 
         try {
             $svgImage = (new SvgImagine())->read($originalResourceStream);
         } catch (\Exception) {
-            return $this->fallbackToOriginalResource($originalResource);
+            return $nonAdjustedResultWithOriginalResource;
         }
 
         $size = $svgImage->getSize();
@@ -129,19 +134,6 @@ class ImageServiceAspect
             'width' => $size->getWidth(),
             'height' => $size->getHeight(),
             'resource' => $resource,
-        ];
-    }
-
-    /**
-     * @param PersistentResource $originalResource
-     * @return array{resource: PersistentResource, width: ?int, height: ?int}
-     */
-    protected function fallbackToOriginalResource(PersistentResource $originalResource): array
-    {
-        return [
-            'width' => null,
-            'height' => null,
-            'resource' => $originalResource
         ];
     }
 }
