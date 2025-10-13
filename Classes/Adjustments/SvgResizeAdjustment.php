@@ -13,7 +13,7 @@ use Neos\Media\Domain\Model\ImageInterface;
  *
  * @Flow\Entity
  */
-class SvgResizeAdjustment extends ResizeImageAdjustment
+class SvgResizeAdjustment extends ResizeImageAdjustment implements SvgImageAdjustmentInterface
 {
     public static function createFromResizeImageAdjustment(ResizeImageAdjustment $resizeImageAdjustment): self
     {

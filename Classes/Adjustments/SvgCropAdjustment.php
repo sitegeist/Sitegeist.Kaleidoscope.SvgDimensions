@@ -13,7 +13,7 @@ use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
  *
  * @Flow\Entity
  */
-class SvgCropAdjustment extends CropImageAdjustment
+class SvgCropAdjustment extends CropImageAdjustment implements SvgImageAdjustmentInterface
 {
     public static function createFromCropImageAdjustment(CropImageAdjustment $cropImageAdjustment): self
     {
